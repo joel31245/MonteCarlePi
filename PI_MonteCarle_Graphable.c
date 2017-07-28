@@ -5,15 +5,16 @@
 
 int main(){
     float x, y;                                 /* x and y coordinates for the monte carlo points */
-    unsigned long long int n;                   /* counts how total points were made */
+    unsigned long long int n=0;                 /* counts how total points were made */
     unsigned long long int countInCircle = 0;   /* counts how many points landed in or on the circle */
     unsigned long long int N=2;
     int nPlace=10;                    // Used to determine how many places the estimate is accurate
     int decimalPlaces = 0;                      // Target for how many decimal places of accuracy wanted
     int dCounter = 0;                           // Counts how many places of accuracy there is in real time calculations
-    int endDecimalCheck = 4;                        /* Tells the final number of digits of accuracy program goes for.
+    int endDecimalCheck = 8;                        /* Tells the final number of digits of accuracy program goes for.
                                                    Meant for testing so that changes are simple and fast for debugging
                                                    rather than going into bowels of code. */
+    int accuCheck = -1;
     double piEst; double pi=M_PI;               // Used in finding out how close to pi we actually are
     srand( time(NULL) );
     FILE *fx = fopen("doubleDigitsAccuracy.csv","w");
@@ -22,11 +23,12 @@ int main(){
 
     printf("---------- NUMERICAL PI ESTIMATOR : Graphable -----------");
 
-    for( decimalPlaces=2; decimalPlaces<=endDecimalCheck; decimalPlaces*=2 ){
-        countInCircle = 0; // Reseting Counter for next iteration.
-        n=0;
-        pi = M_PI;
-
+    for( decimalPlaces=2; decimalPlaces<=endDecimalCheck/2; decimalPlaces+=(int)pow(2,accuCheck)/2 ){
+    /* Explanation for weird loop boundaries: */
+        //countInCircle = 0; // Reseting Counters for next iteration.
+        //n=0;
+        //dCounter = 0; nPlace = 10;
+        accuCheck++;
 
         // If statement checks to see if computer could slow down. Gives a message to console if it does slow down
         printf("\n\n\tWorking on number of decimal places = %ld... Please Wait...\n", decimalPlaces);
@@ -40,10 +42,9 @@ int main(){
             if ( pow(x,2) + pow(y,2) <= 1 )
                 countInCircle++;
 
-            // Counts the number of iterations the code runs
+            // Counts the number of iterations the code runs for the specific accuracy specified
             n++;
 
-            // Block of code displays the results of the calculation
             piEst = (double)4*countInCircle/n;
             // Block of code calculates how many digits of pi was accurate
             if( (int)(pi*nPlace)%nPlace == (int)(piEst*nPlace)%nPlace ){
@@ -55,8 +56,8 @@ int main(){
 
         // Block of code prints to screen and to files.
         printf("Iterations Taken for %d digits of accuracy: %ld\n", decimalPlaces, n);
-        printf("ACTUAL: %.8lf\n", M_PI);
-        printf("ESTIMA: %.8lf\n", piEst);
+        printf("ACTUAL: %.17lf\n", M_PI);
+        printf("ESTIMA: %.17lf\n", piEst);
         if (decimalPlaces<endDecimalCheck) fprintf(fx, "%d,", decimalPlaces); else fprintf(fx, "%d", decimalPlaces);
         if (decimalPlaces<endDecimalCheck) fprintf(fy, "%ld,", n);            else fprintf(fy, "%ld", n);
     } // END OF FOR LOOP that goes through all the digits of accuracy wanted.
