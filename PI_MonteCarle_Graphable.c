@@ -11,24 +11,19 @@ int main(){
     int nPlace=10;                    // Used to determine how many places the estimate is accurate
     int decimalPlaces = 0;                      // Target for how many decimal places of accuracy wanted
     int dCounter = 0;                           // Counts how many places of accuracy there is in real time calculations
-    int endDecimalCheck = 8;                        /* Tells the final number of digits of accuracy program goes for.
+    int endDecimalCheck = 8;                   /* Tells the final number of digits of accuracy program goes for.
                                                    Meant for testing so that changes are simple and fast for debugging
                                                    rather than going into bowels of code. */
-    int accuCheck = -1;
-    double piEst; double pi=M_PI;               // Used in finding out how close to pi we actually are
+    float piEst; float pi=M_PI;               // Used in finding out how close to pi we actually are
     srand( time(NULL) );
-    FILE *fx = fopen("doubleDigitsAccuracy.csv","w");
-    FILE *fy = fopen("doubleIterations.csv","w");
+    FILE *fx = fopen("singleDigitsAccuracy.csv","w");
+    FILE *fy = fopen("singleIterations.csv","w");
 
 
     printf("---------- NUMERICAL PI ESTIMATOR : Graphable -----------");
 
-    for( decimalPlaces=2; decimalPlaces<=endDecimalCheck/2; decimalPlaces+=(int)pow(2,accuCheck)/2 ){
-    /* Explanation for weird loop boundaries: */
-        //countInCircle = 0; // Reseting Counters for next iteration.
-        //n=0;
-        //dCounter = 0; nPlace = 10;
-        accuCheck++;
+    for( decimalPlaces=2; decimalPlaces<=endDecimalCheck; decimalPlaces*=2 ){
+        /* Counters intentionally don't reset so that old runs don't get wasted */
 
         // If statement checks to see if computer could slow down. Gives a message to console if it does slow down
         printf("\n\n\tWorking on number of decimal places = %ld... Please Wait...\n", decimalPlaces);
@@ -45,19 +40,20 @@ int main(){
             // Counts the number of iterations the code runs for the specific accuracy specified
             n++;
 
-            piEst = (double)4*countInCircle/n;
+            piEst = (float)4*countInCircle/n;
             // Block of code calculates how many digits of pi was accurate
             if( (int)(pi*nPlace)%nPlace == (int)(piEst*nPlace)%nPlace ){
                 dCounter++;
                 nPlace*=10;
+                if (decimalPlaces==16) printf("Digits %d\t", dCounter);
             } // END OF IF that checks how many decimal places of accuracy
         }
 
 
         // Block of code prints to screen and to files.
         printf("Iterations Taken for %d digits of accuracy: %ld\n", decimalPlaces, n);
-        printf("ACTUAL: %.17lf\n", M_PI);
-        printf("ESTIMA: %.17lf\n", piEst);
+        printf("ACTUAL: %.17f\n", M_PI);
+        printf("ESTIMA: %.17f\n", piEst);
         if (decimalPlaces<endDecimalCheck) fprintf(fx, "%d,", decimalPlaces); else fprintf(fx, "%d", decimalPlaces);
         if (decimalPlaces<endDecimalCheck) fprintf(fy, "%ld,", n);            else fprintf(fy, "%ld", n);
     } // END OF FOR LOOP that goes through all the digits of accuracy wanted.
