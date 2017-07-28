@@ -3,6 +3,7 @@
 #include <time.h>
 #include <math.h>
 
+
 int main(){
     float x, y;                                 /* x and y coordinates for the monte carlo points */
     unsigned long long int n=0;                 /* counts how total points were made */
@@ -11,13 +12,13 @@ int main(){
     int nPlace=10;                    // Used to determine how many places the estimate is accurate
     int decimalPlaces = 0;                      // Target for how many decimal places of accuracy wanted
     int dCounter = 0;                           // Counts how many places of accuracy there is in real time calculations
-    int endDecimalCheck = 8;                   /* Tells the final number of digits of accuracy program goes for.
+    int endDecimalCheck = 8;                    /* Tells the final number of digits of accuracy program goes for.
                                                    Meant for testing so that changes are simple and fast for debugging
                                                    rather than going into bowels of code. */
-    float piEst; float pi=M_PI;               // Used in finding out how close to pi we actually are
+    double piEst; double pi=M_PI;               // Used in finding out how close to pi we actually are. Doubles get 8 digits before breaking. Floats get 4 digits before breaking
     srand( time(NULL) );
-    FILE *fx = fopen("singleDigitsAccuracy.csv","w");
-    FILE *fy = fopen("singleIterations.csv","w");
+    FILE *fx = fopen("doubleDigitsAccuracy.csv","w");
+    FILE *fy = fopen("doubleIterations.csv","w");
 
 
     printf("---------- NUMERICAL PI ESTIMATOR : Graphable -----------");
@@ -40,12 +41,12 @@ int main(){
             // Counts the number of iterations the code runs for the specific accuracy specified
             n++;
 
-            piEst = (float)4*countInCircle/n;
+            piEst = (double)4*countInCircle/n;
             // Block of code calculates how many digits of pi was accurate
             if( (int)(pi*nPlace)%nPlace == (int)(piEst*nPlace)%nPlace ){
                 dCounter++;
                 nPlace*=10;
-                if (decimalPlaces==16) printf("Digits %d\t", dCounter);
+                //if (decimalPlaces==16) printf("Digits %d\t", dCounter);
             } // END OF IF that checks how many decimal places of accuracy
         }
 
